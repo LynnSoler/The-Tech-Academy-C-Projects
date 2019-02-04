@@ -20,6 +20,12 @@ namespace CarInsurance2.Controllers
             return View(db.Insurees.ToList());
         }
 
+        public ActionResult Admin()
+        {
+            return View(db.Insurees.ToList());
+        }
+
+        
         // GET: Insuree/Details/5
         public ActionResult Details(int? id)
         {
@@ -35,12 +41,15 @@ namespace CarInsurance2.Controllers
             return View(insuree);
         }
 
+
+
         // GET: Insuree/Create
         public ActionResult Create()
         {
             return View();
         }
 
+       
         // POST: Insuree/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -48,6 +57,49 @@ namespace CarInsurance2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,FirstName,LastName,EmailAddress,DateOfBirth,CarYear,CarMake,CarModel,DUI,SpeedingTickets,CoverageType,Quote")] Insuree insuree)
         {
+            decimal quote = 50;
+            if (DateTime.Now.Year - insuree.DateOfBirth.Year < 25)
+            {
+                quote += 25;
+            }
+
+            if (DateTime.Now.Year - insuree.DateOfBirth.Year < 18)
+            {
+                quote += 75;
+            }
+
+            if (insuree.CarYear < 2000 == insuree.CarYear > 25)
+            {
+                quote += 25;
+            }
+
+            if (insuree.CarMake.ToLower() == "Porsche")
+            {
+                quote += 25;
+                if (insuree.CarModel.ToLower() == "911 Carrera")
+                {
+                    quote += 25;
+                }
+            }
+
+            if (insuree.SpeedingTickets > 0)
+            {
+                quote = insuree.SpeedingTickets * 10 + quote;
+            }
+
+            if (insuree.DUI == true)
+            {
+                quote = quote * 0.25M;
+            }
+
+            if (insuree.CoverageType == true)
+            {
+                quote = quote * 0.5M;
+            }
+            insuree.Quote = quote;
+
+
+
             if (ModelState.IsValid)
             {
                 db.Insurees.Add(insuree);
