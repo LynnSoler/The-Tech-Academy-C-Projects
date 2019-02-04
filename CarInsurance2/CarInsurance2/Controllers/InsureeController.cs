@@ -89,12 +89,12 @@ namespace CarInsurance2.Controllers
 
             if (insuree.DUI == true)
             {
-                quote = quote * 0.25M;
+                quote = quote * 0.25M + quote;
             }
 
             if (insuree.CoverageType == true)
             {
-                quote = quote * 0.5M;
+                quote = quote * 0.5M + quote;
             }
             insuree.Quote = quote;
 
